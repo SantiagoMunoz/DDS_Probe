@@ -49,12 +49,25 @@ class probeReaderListener : public ReaderListener {
 	std::mutex mapmutex;
 };
 
-int main(){
+int main(int argc, char *argv[]){
 
+int target_domainId;
 
+    if(argc < 2){
+        std::cout << "Usage: ddsprobe <domainId>" << std::endl;
+        return 1;
+    }else{
+        try{
+            target_domainId = std::stoi(argv[2]);       
+        }catch(std::invalid_argument){
+            std::cout << "Invalid argument. domainId must be a number" << std::endl;
+            return 1;
+        }
+    }
+    std::cout << "Target DomainId: " << std::to_string(target_domainId) << std::endl;
     //Create participant
     ParticipantAttributes Pparam;
-    Pparam.rtps.builtin.domainId = 80; //Temporarily set to 80
+    Pparam.rtps.builtin.domainId = target_domainId; //Temporarily set to 80
     
     Participant *observer = Domain::createParticipant(Pparam);
     if(!observer){
@@ -75,7 +88,6 @@ int main(){
     }
     //Give time for the discovery message exchanges to happen
     std::this_thread::sleep_for(1s);
-
     //Access built-in discovery readers
     std::map<std::string, std::set<std::string>> unfiltered_topics;
     probe_1->mapmutex.lock();

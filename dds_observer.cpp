@@ -3,6 +3,8 @@
 #include <iostream>
 #include <mutex>
 #include <thread>
+#include <chrono>
+
 
 #include <fastrtps/Domain.h>
 #include <fastrtps/participant/Participant.h>
@@ -25,9 +27,10 @@
 
 //Definition of the probe listener -> Capture topic names and types
 
-class probeReaderListener : public ReaderListener {
+class probeReaderListener : public ReaderListener 
+{
 	public:
-	topicnamesandtypesReaderListener(){}
+	probeReaderListener(){}
 
     void onNewCacheChangeAdded(RTPSReader* reader, const CacheChange_t* const change){
         (void)reader;
@@ -49,7 +52,8 @@ class probeReaderListener : public ReaderListener {
 	std::mutex mapmutex;
 };
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[])
+{
 
 int target_domainId;
 
@@ -74,11 +78,11 @@ int target_domainId;
         std::cout << "Error while creating the observer participant." << std::endl;
         return 1;
     }
-    //Attach probeListener to the built-in protocols
-    probeListener* probe_1 = new probeListener();
-    probeListener* probe_2 = new probeListener();
+    //Attach probeReaderListener to the built-in protocols
+    probeReaderListener* probe_1 = new probeReaderListener();
+    probeReaderListener* probe_2 = new probeReaderListener();
 
-    std::pair<StatefulReader*, StatefulReader*> EDPReaders = participant->getEDPReaders();
+    std::pair<StatefulReader*, StatefulReader*> EDPReaders = observer->getEDPReaders();
 
     if( !(EDPReaders.first->setListener(probe_1) & EDPReaders.second->setListener(probe_2)) ){
         std::cout << "Failed to attach probes to the observer participant" << std::endl;
@@ -87,7 +91,7 @@ int target_domainId;
         return 1;
     }
     //Give time for the discovery message exchanges to happen
-    std::this_thread::sleep_for(1s);
+    std::this_thread::sleep_for(std::chrono::milliseconds(3000));
     //Access built-in discovery readers
     std::map<std::string, std::set<std::string>> unfiltered_topics;
     probe_1->mapmutex.lock();

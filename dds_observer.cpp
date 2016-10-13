@@ -62,7 +62,7 @@ int target_domainId;
         return 1;
     }else{
         try{
-            target_domainId = std::stoi(argv[2]);       
+            target_domainId = std::stoi(argv[1]);       
         }catch(std::invalid_argument){
             std::cout << "Invalid argument. domainId must be a number" << std::endl;
             return 1;
@@ -114,7 +114,7 @@ int target_domainId;
         if(it.second.size() >= 1) topics[it.first] = *it.second.begin();
     }
     //Output
-    std::cout << "Topic names and types report. Found "<< std::to_string(topics.size()) << "topics:" << std::endl;
+    std::cout << "Topic names and types report. Found "<< std::to_string(topics.size()) << " topics:" << std::endl;
     for(auto it : topics){
         std::cout << "  Name: '" << it.first << "', Type: '" << it.second << "'" << std::endl;
     }

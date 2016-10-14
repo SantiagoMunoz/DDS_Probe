@@ -1,3 +1,6 @@
 [submodule "fastrtps"]
 	path = thirdparty/fastrtps
 	url = http://github.com/eprosima/fast-rtps
+[submodule "thirdparty/fastcdr"]
+	path = thirdparty/fastcdr
+	url = http://github.com/eprosima/fast-cdr
